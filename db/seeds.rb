@@ -7,3 +7,12 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+puts "Going to seed the database..."
+product = Product.new(name: "Flabbergaster", price: 5, image_url: "flabbergaster.jpg", description: "That which flabbergasts")
+product.save
+product = Product.new(name: "Gasterflabber", price: 10, image_url: "gasterflabber.jpg", description: "That which reverts the flabbergasted object")
+product.save
+product = Product.new(name: "Ool", price: 50, image_url: "pool.jpg", description: "A pool with no p in it")
+product.save
+puts "Done!"
