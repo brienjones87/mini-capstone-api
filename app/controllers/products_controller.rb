@@ -5,8 +5,11 @@ class ProductsController < ApplicationController
   end
 
   def create
-    @product = Product.create(name: params[:name], price: params[:price], image_url: params[:image_url], description: params[:description])
-    render :show
+    @product = Product.create(name: params[:name], price: params[:price], description: params[:description], supplier_id: params[:supplier_id])
+    if @product.valid?
+      render :show
+    else render json: { errors: @product.errors.full_messages }, status: 422
+    end
   end
 
   def show
@@ -19,15 +22,18 @@ class ProductsController < ApplicationController
     @product.update(
       name: params[:name] || @product.name,
       price: params[:price] || @product.price,
-      image_url: params[:image_url] || @product.image_url,
       description: params[:description] || @product.description
     )
-    render :show
+    if @product.valid?
+      render :show
+    else
+      render json: { errors: @product.errors.full_messages }, status: 422
+    end
   end
 
   def destroy
     @recipe = Product.find_by(id: params[:id])
     @recipe.destroy
-    render json: { message: "Recipe successfully destroyed" }
+    render json: { message: "Product successfully destroyed" }
   end
 end

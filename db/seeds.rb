@@ -1,18 +1,27 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+require "ffaker"
 
 puts "Going to seed the database..."
-product = Product.new(name: "Flabbergaster", price: 5, image_url: "flabbergaster.jpg", description: "That which flabbergasts")
-product.save
-product = Product.new(name: "Gasterflabber", price: 10, image_url: "gasterflabber.jpg", description: "That which reverts the flabbergasted object")
-product.save
-product = Product.new(name: "Ool", price: 50, image_url: "pool.jpg", description: "A pool with no p in it")
-product.save
+
+Product.destroy_all
+Supplier.destroy_all
+Image.destroy_all
+
+index_supplier = 0
+while index_supplier < 2
+  Supplier.create(name: FFaker::Product.product, email: FFaker::Internet.email, phone_number: FFaker::PhoneNumber.short_phone_number)
+  index_supplier += 1
+end
+
+index_product = 0
+while index_product < 10
+  Product.create(name: FFaker::Product.product, price: FFaker::Number.between(from: 1, to: 100), image_url: FFaker::Internet.http_url, description: FFaker::Tweet.body, supplier_id: Supplier.ids.sample)
+  index_product += 1
+end
+
+index_image = 0
+while index_image < 30
+  Image.create(product_id: Product.ids.sample, url: FFaker::Internet.http_url)
+  index_image += 1
+end
+
 puts "Done!"
