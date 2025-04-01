@@ -1,11 +1,13 @@
 class ProductsController < ApplicationController
+  before_action :authenticate_admin, except: [ :index, :show ]
+
   def index
     @products = Product.all
     render :index
   end
 
   def create
-    @product = Product.create(name: params[:name], price: params[:price], description: params[:description], supplier_id: params[:supplier_id])
+    @product = Product.create(name: params[:name], price: params[:price], description: params[:description], supplier_id: Supplier.first.id)
     if @product.valid?
       render :show
     else render json: { errors: @product.errors.full_messages }, status: 422
