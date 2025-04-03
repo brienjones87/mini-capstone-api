@@ -1,16 +1,27 @@
 class CartedProductsController < ApplicationController
-  before_action :current_user
+  def index
+    @carted_products = CartedProduct.where(user_id: current_user.id, status: "carted")
+    render :index
+  end
 
   def create
-    @carted_product = CartedProduct.create(user_id: current_user.id, product_id: params[:product_id], quantity: params[:quantity], status: "carted", order_id: nil)
+    @carted_product = CartedProduct.create(
+      user_id: current_user.id,
+      product_id: params[:product_id],
+      quantity: params[:quantity],
+      status: "carted",
+      order_id: nil
+    )
     if @carted_product.valid?
       render :show
-    else render json: { errors: @carted_product.errors.full_messages }, status: 422
+    else
+      render json: { errors: @carted_product.errors.full_messages }, status: 422
     end
   end
 
-  def index
-    @carted_product = CartedProduct.find_by(user_id: current_user.id)
-    render :index
+  def destroy
+    carted_product = CartedProduct.find_by(id: params[:id])
+    carted_product.update(status: "removed")
+    render json: { message: "Successfully destroyed carted product!" }
   end
 end
